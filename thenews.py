@@ -29,8 +29,6 @@ reddit_all = "https://oauth.reddit.com/r/all/top"
 
 reddit_request_token = "https://www.reddit.com/api/v1/access_token"
 
-ignored_subreddits = ['tumblr']
-
 session_user_agent = "simple personal news monitor:" + str(uuid.uuid4())
 
 config_filename = 'secret.cfg'
@@ -44,7 +42,8 @@ gmail_email = config.get('email', 'email')
 gmail_password = config.get('email', 'password')
 
 target_recepient = config.get('recepient', 'email')
-
+ignored_subreddits = config.get('subreddits', 'ignored').split("|")
+priority_subreddits = config.get('subreddits', 'priority').split("|")
 
 headers = dict()
 headers['User-Agent'] = session_user_agent
@@ -105,6 +104,10 @@ for k,v in display_content.iteritems():
     if v['subreddit'] not in display_subreddits:
         display_subreddits.append(v['subreddit'])
 display_subreddits = sorted(display_subreddits, key=unicode.lower)
+
+# smash priority_subreddits on the front of display_subreddits
+display_subreddits = [subr for subr in display_subreddits if subr not in priority_subreddits]
+display_subreddits = priority_subreddits + display_subreddits
     
 
 CONTENT = u""
@@ -117,10 +120,9 @@ for subreddit in display_subreddits:
         CONTENT += "<H4>{}</H4>".format(subreddit)
         for k, v in subreddit_filtered_display_content.iteritems():
             CONTENT += u"<DIV style='padding: 5px;'>"
-            CONTENT += u"{} ".format(v['score'],)
-            CONTENT += u"{} ".format(v['subreddit'],)
             CONTENT += u"<a target='_blank' href='{}'>{}</a>".format(v['full_permalink'], v['title'])
             CONTENT += u" {} ".format(v['created_localtime'],)
+            CONTENT += u" | score: {} ".format(v['score'],)
             CONTENT += u"</DIV>"
         CONTENT += u"</BODY></HTML>"
 
