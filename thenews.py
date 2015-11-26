@@ -125,12 +125,12 @@ for subreddit in display_subreddits:
         CONTENT += u"</BODY></HTML>"
 
 msg = MIMEText(CONTENT, 'html', 'UTF-8')
-msg['Subject'] = "reddit: /r/all/top - last 24h - {}".format(datetime.datetime.now().strftime('%H:%M:%S %m/%d/%Y'))
+msg['Subject'] = "Top Posts Today: /r/all in the last 24h - {} Pacific/US".format(datetime.datetime.now().strftime('%H:%M %m/%d/%Y'))
 msg['From'] = gmail_email
 msg['To'] = target_recepient
 
 #s = smtplib.SMTP('localhost', 1025) # test port
-s = smtplib.SMTP('smtp.gmail.com', 587) # test port
+s = smtplib.SMTP('smtp.gmail.com', 587)
 s.starttls()
 s.login(gmail_email, gmail_password)
 s.sendmail(gmail_email, [target_recepient], msg.as_string())
