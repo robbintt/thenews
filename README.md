@@ -1,7 +1,7 @@
 
 ### The News!
 
-Keep up to date with the world. Get reddit's top 100 posts delivered to your inbox in an orderly fashion on the schedule you prefer.
+Keep up to date with the world. Get reddit's top 100 posts delivered to your inbox in an orderly fashion on the schedule you prefer. Scheduler not provided. Use cron.
 
 Caveat Emptor - This is a quick script. It is extremely sensitive and will break if anything changes. If it proves useful, it will improve.
 
