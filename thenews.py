@@ -5,15 +5,17 @@ Plan: run this every 8 hours in cron
 """
 import smtplib
 from email.mime.text import MIMEText
+
 import uuid
 from ConfigParser import SafeConfigParser
 import time
-import pprint
 import datetime
+
 import pytz
-
-
 import requests, requests.auth
+
+
+reddit_all = "https://oauth.reddit.com/r/all/top"
 
 reddit_request_token = "https://www.reddit.com/api/v1/access_token"
 
@@ -49,11 +51,11 @@ request_headers = dict()
 request_headers['Authorization'] = 'bearer ' + oauth2_token['access_token']
 request_headers['User-Agent'] = session_user_agent
 
-
-reddit_all = "https://oauth.reddit.com/r/all/"
+request_data = dict()
+request_data['limit'] = 100
 
 time.sleep(3)
-r = requests.get(reddit_all, headers=request_headers)
+r = requests.get(reddit_all, headers=request_headers, params=request_data)
 
 if r.ok:
     news = r.json()
