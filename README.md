@@ -12,6 +12,8 @@ Caveat Emptor - This is a quick script. It is extremely sensitive and will break
 
 First of all, you need to have a server running that has: `python 2.7`, `cron`, `internet access` and `more stuff`
 
+Next make a virtualenv and add the contents of requirements.txt
+
 Make a new reddit account, add an app, choose developer. Get the app ID (string of random looking characters) and the app SECRET (also a string of random looking characters) and put them in the secret.cfg. file.
 
 Make a new gmail account, allow 'less secure apps': https://support.google.com/accounts/answer/6010255?hl=en
