@@ -39,7 +39,6 @@ post_data['grant_type'] = 'password'
 post_data['username'] = username
 post_data['password'] = username_p
 
-
 client_auth = requests.auth.HTTPBasicAuth(appid, secret)
 
 r = requests.post(reddit_request_token, headers=headers, auth=client_auth, data=post_data)
@@ -64,11 +63,6 @@ if r.ok:
 else:
     raise("There was a problem with the request, status code: {}".format(r.status_code))
 
-#pprint.pprint(news)
-#[pprint.pprint(x['data']['url']) for x in news['data']['children']]
-#[pprint.pprint(x['data'].keys()) for x in news['data']['children']]
-#[pprint.pprint(x['data']['title']) for x in news['data']['children']]
-
 display_keys = ['title', 'score', 'permalink', 'subreddit', 'id', 'created_utc']
 
 display_content = dict()
@@ -78,17 +72,10 @@ for entry in news['data']['children']:
     for data_field in display_keys:
         display_content[current_id][data_field] = entry['data'][data_field]
 
-'''
-for entry in news['data']['children']:
-    print entry['data']['title']
-    print entry['data']['score']
-    print entry['data']['permalink']
-    print entry['data']['subreddit']
-    print entry['data']['id']
-    print pytz.timezone('US/Pacific').localize(datetime.datetime.fromtimestamp(entry['data']['created_utc']))
     # this would probably work but the server may use a different local than pacific.
     # print datetime.datetime.fromtimestamp(entry['data']['created_utc'])
-'''
+    display_content[current_id]['created_localtime'] = pytz.timezone('US/Pacific').localize(datetime.datetime.fromtimestamp(entry['data']['created_utc'])).strftime('%H:%M:%S %m/%d/%Y')
+
 
 pprint.pprint(display_content)
 
