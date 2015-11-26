@@ -11,6 +11,8 @@ from ConfigParser import SafeConfigParser
 import time
 import datetime
 
+import pprint
+
 import pytz
 import requests, requests.auth
 
@@ -67,6 +69,16 @@ else:
 #[pprint.pprint(x['data'].keys()) for x in news['data']['children']]
 #[pprint.pprint(x['data']['title']) for x in news['data']['children']]
 
+display_keys = ['title', 'score', 'permalink', 'subreddit', 'id', 'created_utc']
+
+display_content = dict()
+for entry in news['data']['children']:
+    current_id = entry['data']['id']
+    display_content[current_id] = dict() 
+    for data_field in display_keys:
+        display_content[current_id][data_field] = entry['data'][data_field]
+
+'''
 for entry in news['data']['children']:
     print entry['data']['title']
     print entry['data']['score']
@@ -76,28 +88,9 @@ for entry in news['data']['children']:
     print pytz.timezone('US/Pacific').localize(datetime.datetime.fromtimestamp(entry['data']['created_utc']))
     # this would probably work but the server may use a different local than pacific.
     # print datetime.datetime.fromtimestamp(entry['data']['created_utc'])
-
-
-"""
-print news
-print news.keys()
-
-print 
-
-#print news['kind']
-
-print news['data'].keys()
-print news['data']['after']
-print news['data']['before']
-"""
-
-
 '''
-headers = dict()
-headers['t'] = 'hour'
-headers['User-Agent'] = str(uuid.uuid4()) + " simple personal news monitor"
-headers[''] = appid
-'''
+
+pprint.pprint(display_content)
 
 """
 me = 'robbintt@gmail.com'
