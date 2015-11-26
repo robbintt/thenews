@@ -41,7 +41,7 @@ username_p = config.get('reddit', 'username_p')
 gmail_email = config.get('email', 'email')
 gmail_password = config.get('email', 'password')
 
-target_recepient = config.get('recepient', 'email')
+target_recepients = config.get('recepients', 'emails').split("|")
 ignored_subreddits = config.get('subreddits', 'ignored').split("|")
 priority_subreddits = config.get('subreddits', 'priority').split("|")
 
@@ -129,13 +129,17 @@ for subreddit in display_subreddits:
 msg = MIMEText(CONTENT, 'html', 'UTF-8')
 msg['Subject'] = "Top Posts Today: /r/all in the last 24h - {} Pacific/US".format(datetime.datetime.now().strftime('%H:%M %m/%d/%Y'))
 msg['From'] = gmail_email
-msg['To'] = target_recepient
+# simple check to manage one or more recepients
+if len(target_recepients) > 1:
+    msg['To'] = ", ".join(target_recepients) # sends to the first person
+else:
+    msg['To'] = target_recepients[0] # sends to the first person
 
 #s = smtplib.SMTP('localhost', 1025) # test port
 s = smtplib.SMTP('smtp.gmail.com', 587)
 s.starttls()
 s.login(gmail_email, gmail_password)
-s.sendmail(gmail_email, [target_recepient], msg.as_string())
+s.sendmail(gmail_email, target_recepients, msg.as_string())
 
 # this is a good candidate for a context manager
 s.quit

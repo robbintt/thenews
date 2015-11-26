@@ -32,6 +32,8 @@ I put `thenews/` in `/home/myusername/bin`, then added this line to cron:
 
 You can ignore or prioritize by adding them to the respective section in secret.cfg
 
+You can add more than one recepient.
+
 
 #### Is it safe?
 
