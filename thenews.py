@@ -121,7 +121,7 @@ for subreddit in display_subreddits:
         for k, v in subreddit_filtered_display_content.iteritems():
             CONTENT += u"<DIV style='padding: 5px;'>"
             CONTENT += u"<a target='_blank' href='{}'>{}</a>".format(v['full_permalink'], v['title'])
-            CONTENT += u" {} ".format(v['created_localtime'],)
+            CONTENT += u" | {} ".format(v['created_localtime'],)
             CONTENT += u" | score: {} ".format(v['score'],)
             CONTENT += u"</DIV>"
         CONTENT += u"</BODY></HTML>"
