@@ -16,6 +16,12 @@ import pprint
 import pytz
 import requests, requests.auth
 
+# handle UTF-8 correctly in stdout/stderr
+import sys
+import codecs
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+
 
 reddit_all = "https://oauth.reddit.com/r/all/top"
 
@@ -76,15 +82,24 @@ for entry in news['data']['children']:
     # print datetime.datetime.fromtimestamp(entry['data']['created_utc'])
     display_content[current_id]['created_localtime'] = pytz.timezone('US/Pacific').localize(datetime.datetime.fromtimestamp(entry['data']['created_utc'])).strftime('%H:%M:%S %m/%d/%Y')
 
+# use display_keys to handle the manufactured string too
+display_keys.append('created_localtime')
 
-pprint.pprint(display_content)
+CONTENT = u""
 
-"""
+for k, v in display_content.iteritems():
+    CONTENT += u"{} ".format(k,)
+    for data_field in display_keys:
+        CONTENT += u"{} ".format(v[data_field],)
+    CONTENT += u"\n"
+
+print CONTENT
+
+
 me = 'robbintt@gmail.com'
 you = 'robbintt@gmail.com'
 
-with open(textfile, 'rb') as fp:
-    msg = MIMEText(fp.read)
+msg = MIMEText(CONTENT, 'plain', 'UTF-8')
 
 msg['Subject'] = "The Subject, DATE"
 msg['From'] = me
@@ -95,4 +110,3 @@ s.sendmail(me, [you], msg.as_string())
 
 # this is a good candidate for a context manager
 s.quit
-"""
