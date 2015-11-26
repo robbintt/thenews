@@ -7,6 +7,9 @@ import smtplib
 from email.mime.text import MIMEText
 import uuid
 from ConfigParser import SafeConfigParser
+import time
+import pprint
+
 import requests, requests.auth
 
 reddit_request_token = "https://www.reddit.com/api/v1/access_token"
@@ -35,11 +38,32 @@ client_auth = requests.auth.HTTPBasicAuth(appid, secret)
 r = requests.post(reddit_request_token, headers=headers, auth=client_auth, data=post_data)
 
 if r.ok:
-    print r.json()
+    oauth2_token = r.json()
+else:
+    raise Exception("No Authorization token! Why?")
+
+request_headers = dict()
+request_headers['Authorization'] = 'bearer ' + oauth2_token['access_token']
+request_headers['User-Agent'] = session_user_agent
 
 
-reddit_all = "https://www.reddit.com/r/all/"
+reddit_all = "https://oauth.reddit.com/r/all/"
 
+time.sleep(3)
+r = requests.get(reddit_all, headers=request_headers)
+
+if r.ok:
+    news = r.json()
+else:
+    raise("There was a problem with the request, status code: {}".format(r.status_code))
+
+#pprint.pprint(news)
+
+print news.keys()
+
+#print news['kind']
+
+print news['data'].keys()
 
 '''
 headers = dict()
