@@ -3,12 +3,14 @@ Send the top 20 posts in /r/all every time this runs.
 
 Plan: run this every 8 hours in cron
 """
+from __future__ import print_function
 import smtplib
 from email.mime.text import MIMEText
 import uuid
 from ConfigParser import SafeConfigParser
 import time
 import pprint
+
 
 import requests, requests.auth
 
@@ -59,11 +61,22 @@ else:
 
 #pprint.pprint(news)
 
+#[pprint.pprint(x['data']['url']) for x in news['data']['children']]
+[pprint.pprint(x['data'].keys()) for x in news['data']['children']]
+
+"""
+print news
 print news.keys()
+
+print 
 
 #print news['kind']
 
 print news['data'].keys()
+print news['data']['after']
+print news['data']['before']
+"""
+
 
 '''
 headers = dict()
