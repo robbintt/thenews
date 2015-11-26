@@ -3,13 +3,14 @@ Send the top 20 posts in /r/all every time this runs.
 
 Plan: run this every 8 hours in cron
 """
-from __future__ import print_function
 import smtplib
 from email.mime.text import MIMEText
 import uuid
 from ConfigParser import SafeConfigParser
 import time
 import pprint
+import datetime
+import pytz
 
 
 import requests, requests.auth
@@ -60,9 +61,20 @@ else:
     raise("There was a problem with the request, status code: {}".format(r.status_code))
 
 #pprint.pprint(news)
-
 #[pprint.pprint(x['data']['url']) for x in news['data']['children']]
-[pprint.pprint(x['data'].keys()) for x in news['data']['children']]
+#[pprint.pprint(x['data'].keys()) for x in news['data']['children']]
+#[pprint.pprint(x['data']['title']) for x in news['data']['children']]
+
+for entry in news['data']['children']:
+    print entry['data']['title']
+    print entry['data']['score']
+    print entry['data']['permalink']
+    print entry['data']['subreddit']
+    print entry['data']['id']
+    print pytz.timezone('US/Pacific').localize(datetime.datetime.fromtimestamp(entry['data']['created_utc']))
+    # this would probably work but the server may use a different local than pacific.
+    # print datetime.datetime.fromtimestamp(entry['data']['created_utc'])
+
 
 """
 print news
