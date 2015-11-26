@@ -29,7 +29,7 @@ reddit_all = "https://oauth.reddit.com/r/all/top"
 
 reddit_request_token = "https://www.reddit.com/api/v1/access_token"
 
-ignored_subreddits = ['BlackPeopleTwitter', 'gifs', 'pics', 'funny']
+ignored_subreddits = ['tumblr']
 
 session_user_agent = "simple personal news monitor:" + str(uuid.uuid4())
 
@@ -96,17 +96,30 @@ for entry in news['data']['children']:
 display_keys.append('created_localtime')
 display_keys.append('full_permalink')
 
+# make a set of all subreddits in top posts
+display_subreddits = list()
+for k,v in display_content.iteritems():
+    if v['subreddit'] not in display_subreddits:
+        display_subreddits.append(v['subreddit'])
+display_subreddits = sorted(display_subreddits, key=unicode.lower)
+    
+
 CONTENT = u""
 CONTENT += u"<HTML><HEAD></HEAD><BODY>"
-for k, v in display_content.iteritems():
-    if v['subreddit'] not in ignored_subreddits:
-        CONTENT += u"<DIV style='padding: 5px;'>"
-        CONTENT += u"{} ".format(v['score'],)
-        CONTENT += u"{} ".format(v['subreddit'],)
-        CONTENT += u"<a target='_blank' href='{}'>{}</a>".format(v['full_permalink'], v['title'])
-        CONTENT += u" {} ".format(v['created_localtime'],)
-        CONTENT += u"</DIV>"
-CONTENT += u"</BODY></HTML>"
+
+# filter posts from each subreddit one at a time
+for subreddit in display_subreddits:
+    if subreddit not in ignored_subreddits:
+        subreddit_filtered_display_content = dict( [ (filt_k, filt_v) for filt_k, filt_v in display_content.iteritems() if filt_v['subreddit'] == subreddit ] )
+        CONTENT += "<H4>{}</H4>".format(subreddit)
+        for k, v in subreddit_filtered_display_content.iteritems():
+            CONTENT += u"<DIV style='padding: 5px;'>"
+            CONTENT += u"{} ".format(v['score'],)
+            CONTENT += u"{} ".format(v['subreddit'],)
+            CONTENT += u"<a target='_blank' href='{}'>{}</a>".format(v['full_permalink'], v['title'])
+            CONTENT += u" {} ".format(v['created_localtime'],)
+            CONTENT += u"</DIV>"
+        CONTENT += u"</BODY></HTML>"
 
 msg = MIMEText(CONTENT, 'html', 'UTF-8')
 msg['Subject'] = "reddit: /r/all/top - last 24h - {}".format(datetime.datetime.now().strftime('%H:%M:%S %m/%d/%Y'))
