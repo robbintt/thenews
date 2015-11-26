@@ -1,7 +1,9 @@
 """
-Send the top 20 posts in /r/all every time this runs.
+Send the top 100 posts in /r/all every time this runs.
 
-Plan: run this every 8 hours in cron
+Future:
+    allow prioritization of certain subreddits if they exist.
+    for example, worldnews is always slot #1 and science is always slot #2
 """
 import smtplib
 from email.mime.text import MIMEText
@@ -23,8 +25,6 @@ sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
 
-target_recepient = 'robbintt@gmail.com'
-
 reddit_all = "https://oauth.reddit.com/r/all/top"
 
 reddit_request_token = "https://www.reddit.com/api/v1/access_token"
@@ -42,6 +42,9 @@ username = config.get('reddit', 'username')
 username_p = config.get('reddit', 'username_p')
 gmail_email = config.get('email', 'email')
 gmail_password = config.get('email', 'password')
+
+target_recepient = config.get('recepient', 'email')
+
 
 headers = dict()
 headers['User-Agent'] = session_user_agent
