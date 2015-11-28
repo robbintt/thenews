@@ -92,7 +92,7 @@ for entry in news['data']['children']:
     # this would probably work but the server may use a different local than pacific.
     # print datetime.datetime.fromtimestamp(entry['data']['created_utc'])
     display_content[current_id]['created_localtime'] = pytz.timezone('US/Pacific').localize(datetime.datetime.fromtimestamp(entry['data']['created_utc'])).strftime('%H:%M %m/%d')
-    display_content[current_id]['full_permalink'] = "http://www.reddit.com/"+entry['data']['permalink']
+    display_content[current_id]['full_permalink'] = "http://www.reddit.com"+entry['data']['permalink']
 
 # use display_keys to handle the manufactured string too
 display_keys.append('created_localtime')
