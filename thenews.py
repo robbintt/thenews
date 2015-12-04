@@ -43,7 +43,8 @@ gmail_password = config.get('email', 'password')
 
 target_recepients = config.get('recepients', 'emails').split("|")
 ignored_subreddits = config.get('subreddits', 'ignored').split("|")
-priority_subreddits = config.get('subreddits', 'priority').split("|")
+highpriority_subreddits = config.get('subreddits', 'highpriority').split("|")
+lowpriority_subreddits = config.get('subreddits', 'lowpriority').split("|")
 
 headers = dict()
 headers['User-Agent'] = session_user_agent
@@ -105,9 +106,11 @@ for k,v in display_content.iteritems():
         display_subreddits.append(v['subreddit'])
 display_subreddits = sorted(display_subreddits, key=unicode.lower)
 
-# smash priority_subreddits on the front of display_subreddits
-display_subreddits = [subr for subr in display_subreddits if subr not in priority_subreddits]
-display_subreddits = priority_subreddits + display_subreddits
+# filter highpriority and lowpriority out of display_subreddits
+display_subreddits = [subr for subr in display_subreddits if subr not in highpriority_subreddits]
+display_subreddits = [subr for subr in display_subreddits if subr not in lowpriority_subreddits]
+# smash these together in order
+display_subreddits = highpriority_subreddits + display_subreddits + lowpriority_subreddits
     
 
 CONTENT = u""
