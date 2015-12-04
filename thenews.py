@@ -1,10 +1,7 @@
 """
 Send the top 100 posts in /r/all every time this runs.
-
-Future:
-    allow prioritization of certain subreddits if they exist.
-    for example, worldnews is always slot #1 and science is always slot #2
 """
+
 import smtplib
 from email.mime.text import MIMEText
 
@@ -12,8 +9,6 @@ import uuid
 from ConfigParser import SafeConfigParser
 import time
 import datetime
-
-import pprint
 
 import pytz
 import requests, requests.auth
@@ -24,6 +19,7 @@ import codecs
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
+my_timezone = 'US/Pacific'
 
 reddit_all = "https://oauth.reddit.com/r/all/top"
 
@@ -92,7 +88,7 @@ for entry in news['data']['children']:
 
     # this would probably work but the server may use a different local than pacific.
     # print datetime.datetime.fromtimestamp(entry['data']['created_utc'])
-    display_content[current_id]['created_localtime'] = pytz.timezone('US/Pacific').localize(datetime.datetime.fromtimestamp(entry['data']['created_utc'])).strftime('%H:%M %m/%d')
+    display_content[current_id]['created_localtime'] = pytz.timezone(my_timezone).localize(datetime.datetime.fromtimestamp(entry['data']['created_utc'])).strftime('%H:%M %m/%d')
     display_content[current_id]['full_permalink'] = "http://www.reddit.com"+entry['data']['permalink']
 
 # use display_keys to handle the manufactured string too
