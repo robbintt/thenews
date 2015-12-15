@@ -32,18 +32,25 @@ I put `thenews/` in `/home/myusername/bin`, then added this line to cron:
 
 #### Other Stuff
 
-You can ignore or prioritize by adding them to the respective section in secret.cfg
+You can ignore or prioritize subreddits by adding them to the respective section in `secret.cfg`
 
-You can add more than one recepient.
+You can add more than one recepient. `See secret.cfg.example`
 
 
 #### Is it safe?
 
 Short Answer: As safe as your server.
 
-It is best to use a fresh gmail account because you have to store a password in the secret.cfg file.
+It is best to use a separate gmail account because you have to store a password in the secret.cfg file.
 
-You should also use a fresh reddit account intended for this purpose.
+You should also use a separate reddit account intended for this purpose.
+
+
+#### Issues:
+
+A really bare logging pattern has been dropped into the request/post success/fail control flow for both HTTP events.
+
+No logging exists to record success/failure of the email yet.
 
 
 #### License

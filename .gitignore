@@ -1,4 +1,6 @@
 
-*.swp
 venv/
+
+*.swp
 *.cfg
+*.log

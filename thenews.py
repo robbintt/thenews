@@ -25,6 +25,8 @@ reddit_all = "https://oauth.reddit.com/r/all/top"
 
 reddit_request_token = "https://www.reddit.com/api/v1/access_token"
 
+log_filename = "requests.log"
+
 session_user_agent = "simple personal news monitor:" + str(uuid.uuid4())
 
 config_filename = 'secret.cfg'
@@ -56,7 +58,13 @@ r = requests.post(reddit_request_token, headers=headers, auth=client_auth, data=
 
 if r.ok:
     oauth2_token = r.json()
+    # this pattern is copied for basic logging and needs DRYed out.
+    with open(log_filename, 'a') as f:
+        f.write("Success: The auth request to {} at {}.\n".format(reddit_request_token, datetime.datetime.now().strftime('%H:%M %m/%d/%Y')))
 else:
+    # this pattern is copied for basic logging and needs DRYed out.
+    with open(log_filename, 'a') as f:
+        f.write("Fail: The auth request to {} at {}.\n".format(reddit_request_token, datetime.datetime.now().strftime('%H:%M %m/%d/%Y')))
     raise Exception("No Authorization token! Why?")
 
 request_headers = dict()
@@ -74,7 +82,13 @@ r = requests.get(reddit_all, headers=request_headers, params=request_data)
 
 if r.ok:
     news = r.json()
+    # this pattern is copied for basic logging and needs DRYed out.
+    with open(log_filename, 'a') as f:
+        f.write("Success: The /r/all request to {} at {}.\n".format(reddit_request_token, datetime.datetime.now().strftime('%H:%M %m/%d/%Y')))
 else:
+    # this pattern is copied for basic logging and needs DRYed out.
+    with open(log_filename, 'a') as f:
+        f.write("Fail: The /r/all request to {} at {}.\n".format(reddit_all,datetime.datetime.now().strftime('%H:%M %m/%d/%Y')))
     raise("There was a problem with the request, status code: {}".format(r.status_code))
 
 display_keys = ['title', 'score', 'permalink', 'subreddit', 'id', 'created_utc']
