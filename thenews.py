@@ -13,6 +13,8 @@ import datetime
 import pytz
 import requests, requests.auth
 
+import json
+
 # handle UTF-8 correctly in stdout/stderr
 import sys
 import codecs
@@ -26,6 +28,8 @@ reddit_all = "https://oauth.reddit.com/r/all/top"
 reddit_request_token = "https://www.reddit.com/api/v1/access_token"
 
 log_filename = "requests.log"
+
+prev_scrape_id_filename = "last_scrape_ids.json"
 
 session_user_agent = "simple personal news monitor:" + str(uuid.uuid4())
 
@@ -109,6 +113,17 @@ for entry in news['data']['children']:
 display_keys.append('created_localtime')
 display_keys.append('full_permalink')
 
+# define the name for graceful error handling
+old_posts = list()
+# last scrape's post IDs are stored. we will filter these out from display in the email.
+with open(prev_scrape_id_filename, 'r') as f:
+    old_posts = json.load(f)
+    # this is sensitive and could use error handling. it better be a json list of strings.
+
+# make a list of post IDs scraped and save it.
+with open(prev_scrape_id_filename, 'w') as f:
+    json.dump(display_content.keys(), f)
+
 # make a set of all subreddits in top posts
 display_subreddits = list()
 for k,v in display_content.iteritems():
@@ -132,6 +147,11 @@ for subreddit in display_subreddits:
         subreddit_filtered_display_content = dict( [ (filt_k, filt_v) for filt_k, filt_v in display_content.iteritems() if filt_v['subreddit'] == subreddit ] )
         CONTENT += "<H4>{}</H4>".format(subreddit)
         for k, v in subreddit_filtered_display_content.iteritems():
+
+            # filter posts already sent to users last scrape
+            if k in old_posts:
+                continue
+
             CONTENT += u"<DIV style='padding: 5px;'>"
             CONTENT += u"<a target='_blank' href='{}'>{}</a>".format(v['full_permalink'], v['title'])
             CONTENT += u" | {} ".format(v['created_localtime'],)
